@@ -9,7 +9,7 @@ fixture=ROOT/'validation/package-smoke';fixture.mkdir(parents=True,exist_ok=True
 (fixture/'project.godot').write_text('config_version=5\n[application]\nconfig/name="Range Package Smoke"\n[debug]\nfile_logging/enable_file_logging=false\n')
 shutil.copy2(ROOT/'project/tests/PackageSmoke.gd',fixture/'PackageSmoke.gd')
 # Metro mounts VMZ as ZIP. Use that same representation without loose files.
-shutil.copy2(ROOT/'release/ShootingRange-0.2.4.vmz',fixture/'Range.zip')
+shutil.copy2(ROOT/'release/ShootingRange-0.2.5.vmz',fixture/'Range.zip')
 env=os.environ.copy()
 for name in ['APPDATA','LOCALAPPDATA']:
     path=fixture/name.lower();path.mkdir(exist_ok=True);env[name]=str(path)

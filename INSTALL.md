@@ -1,4 +1,4 @@
-# Cabin Shooting Range 0.2.4
+# Cabin Shooting Range 0.2.5
 
 Nine practice targets, three modular room pieces, reactive steel, scoring and saved range layouts for Road to Vostok.
 
@@ -30,6 +30,8 @@ Existing targets use the corrected geometry when their map loads after restartin
 Head outside the cabin into **Village**. On the first visit, six starter targets are placed on supported terrain around the cabin.
 
 Press **F4 outdoors** to open the range editor. **Alt+R** also works if another application does not capture it. Choose a piece and click clear ground to place it. Click and hold an existing piece to drag it; release to commit. Invalid placements are rejected. Use the editor's rotation, undo and scenario controls to arrange your range.
+
+To save an arrangement, choose **Scenario 1**, **2** or **3**, then click **Save**. To switch to a saved arrangement, choose its scenario button and click **Load**. An empty slot leaves your current arrangement in place.
 
 | Feature | Details |
 | --- | --- |

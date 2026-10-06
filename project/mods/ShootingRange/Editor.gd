@@ -8,6 +8,8 @@ var camera: Camera3D
 var original_camera: Camera3D
 var core: Node
 var core_mode=Node.PROCESS_MODE_INHERIT
+var native_ui: Control
+var native_ui_visible=false
 var mouse_mode=Input.MOUSE_MODE_CAPTURED
 var selected: Node3D
 var dragged=false
@@ -22,6 +24,8 @@ var distance=13.0
 var pitch=.73
 var pending_kind=""
 var finish_drag=false
+var cursor_position=Vector2.ZERO
+var pointer_events: Array[InputEventMouseButton]=[]
 
 func _ready() -> void:
 	ui=UI.new()
@@ -50,6 +54,10 @@ func open() -> void:
 	distance=13
 	core_mode=core.process_mode
 	core.process_mode=Node.PROCESS_MODE_DISABLED
+	native_ui=core.get_node_or_null("UI")
+	if native_ui:
+		native_ui_visible=native_ui.visible
+		native_ui.hide()
 	mouse_mode=Input.mouse_mode
 	camera=Camera3D.new()
 	host.root.add_child(camera)
@@ -57,6 +65,7 @@ func open() -> void:
 	camera.far=300
 	camera.cull_mask=original_camera.cull_mask
 	opened=true
+	cursor_position=get_viewport().get_mouse_position()
 	host.session.abandon()
 	update_camera()
 	camera.make_current()
@@ -69,11 +78,14 @@ func close() -> void:
 	cancel_drag()
 	select(null)
 	opened=false
+	pointer_events.clear()
 	pending_kind=""
 	host.save_working()
 	for target in host.targets:
 		if is_instance_valid(target):target.set_editing(false)
 	if is_instance_valid(core) and core.process_mode==Node.PROCESS_MODE_DISABLED:core.process_mode=core_mode
+	if is_instance_valid(native_ui):native_ui.visible=native_ui_visible
+	native_ui=null
 	if is_instance_valid(original_camera):original_camera.make_current()
 	if is_instance_valid(camera):camera.queue_free()
 	camera=null
@@ -124,13 +136,17 @@ func start_drag(target: Node3D, ground: Dictionary) -> void:
 func ground_cursor() -> Dictionary:
 	var ignore: Array[RID]=[]
 	for target in host.targets:ignore.append_array(target.rids())
-	return host.placement.cursor(camera,get_viewport().get_mouse_position(),ignore)
+	return host.placement.cursor(camera,cursor_position,ignore)
 
 func _physics_process(delta: float) -> void:
 	if not opened:return
 	if host.blocked() or not is_instance_valid(host.active_map) or get_viewport().get_camera_3d()!=camera or Input.mouse_mode!=Input.MOUSE_MODE_VISIBLE:
 		close()
 		return
+	for event in pointer_events:
+		cursor_position=event.position
+		world_mouse(event)
+	pointer_events.clear()
 	if not dragged:
 		var motion=Vector3(float(Input.is_physical_key_pressed(KEY_D))-float(Input.is_physical_key_pressed(KEY_A)),0,float(Input.is_physical_key_pressed(KEY_S))-float(Input.is_physical_key_pressed(KEY_W)))
 		if Input.is_physical_key_pressed(KEY_CTRL) or Input.is_physical_key_pressed(KEY_ALT):motion=Vector3.ZERO
@@ -207,43 +223,52 @@ func duplicate_selected() -> void:
 
 func _input(event: InputEvent) -> void:
 	if not opened:return
+	if event is InputEventMouse:
+		cursor_position=event.position
+		# Native HUD controls can consume world clicks even with Core disabled.
+		# Keep the panel/popup in normal GUI dispatch; resolve world rays in physics.
+		if ui.panel.get_global_rect().has_point(event.position) or ui.popup_open():
+			if event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT and not event.pressed and dragged:cancel_drag()
+			return
+		if event is InputEventMouseButton:pointer_events.append(event)
+		elif event is InputEventMouseMotion and event.button_mask&MOUSE_BUTTON_MASK_RIGHT and not dragged:
+			yaw-=event.relative.x*.006
+			pitch=clampf(pitch+event.relative.y*.004,.25,1.35)
+		get_viewport().set_input_as_handled()
+		return
 	# Return controls before another mod handles its own menu/tablet shortcut.
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key=event.physical_keycode if event.physical_keycode else event.keycode
 		if key in [KEY_F5,KEY_F6,KEY_F7,KEY_F8,KEY_F9,KEY_F10,KEY_F11,KEY_TAB]:close()
-	elif event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT and not event.pressed and dragged:
-		if ui.panel.get_global_rect().has_point(event.position):cancel_drag()
-		else:finish_drag=true
+
+func world_mouse(event: InputEventMouseButton) -> void:
+	if event.button_index==MOUSE_BUTTON_LEFT:
+		if not event.pressed:finish_drag=dragged
+		elif host.loading:return
+		elif not pending_kind.is_empty():
+			var floor=ground_cursor()
+			if floor.is_empty():return
+			var kind=pending_kind
+			var result=host.placement.evaluate(floor.position,kind,yaw)
+			if not result.valid:host.notice(result.reason);return
+			var target=host.spawn(kind,result.position,yaw)
+			pending_kind=""
+			fresh=true
+			start_drag(target,floor)
+			drop_result=result
+		else:
+			var ignore: Array[RID]=[]
+			var found=host.placement.cursor(camera,event.position,ignore)
+			if not found.is_empty() and found.collider.has_meta("range_target"):
+				start_drag(found.collider.get_meta("range_target"),ground_cursor())
+			else:select(null)
+	elif event.button_index==MOUSE_BUTTON_RIGHT and event.pressed and (dragged or not pending_kind.is_empty()):cancel_drag()
+	elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
+		distance=clampf(distance*(.9 if event.button_index==MOUSE_BUTTON_WHEEL_UP else 1.1),4,48)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not opened:return
-	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT) and not dragged:
-		yaw-=event.relative.x*.006
-		pitch=clampf(pitch+event.relative.y*.004,.25,1.35)
-	elif event is InputEventMouseButton:
-		if event.button_index==MOUSE_BUTTON_LEFT:
-			if not event.pressed:finish_drag=dragged
-			elif host.loading:return
-			elif not pending_kind.is_empty():
-				var floor=ground_cursor()
-				if floor.is_empty():return
-				var kind=pending_kind
-				var result=host.placement.evaluate(floor.position,kind,yaw)
-				if not result.valid:host.notice(result.reason);return
-				var target=host.spawn(kind,result.position,yaw)
-				pending_kind=""
-				fresh=true
-				start_drag(target,floor)
-				drop_result=result
-			else:
-				var found=host.placement.cursor(camera,event.position,[])
-				if not found.is_empty() and found.collider.has_meta("range_target"):
-					start_drag(found.collider.get_meta("range_target"),ground_cursor())
-				else:select(null)
-		elif event.button_index==MOUSE_BUTTON_RIGHT and event.pressed and (dragged or not pending_kind.is_empty()):cancel_drag()
-		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
-			distance=clampf(distance*(.9 if event.button_index==MOUSE_BUTTON_WHEEL_UP else 1.1),4,48)
-	elif event is InputEventKey and event.pressed and not event.echo:
+	if event is InputEventKey and event.pressed and not event.echo:
 		var key=event.physical_keycode if event.physical_keycode else event.keycode
 		if key==KEY_ESCAPE:
 			if dragged or not pending_kind.is_empty():cancel_drag()

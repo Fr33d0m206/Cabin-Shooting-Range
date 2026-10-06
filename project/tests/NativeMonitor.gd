@@ -62,6 +62,8 @@ func run() -> void:
 	await tap_shortcut(KEY_F4)
 	if not check(host.editor.opened,"F4 opens editor against native player Core"):return
 	await wait_frames(5)
+	var editor_checks=load("res://EditorInputChecks.gd").new()
+	if not await editor_checks.run(host,check):return
 	host.editor.focus=cabin.global_position+Vector3(8,1,8)
 	host.editor.distance=25
 	host.editor.yaw=.4

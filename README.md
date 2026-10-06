@@ -1,6 +1,6 @@
 # Cabin Shooting Range
 
-**Version 0.2.4** | **Road to Vostok** | **Metro Mod Loader**
+**Version 0.2.5** | **Road to Vostok** | **Metro Mod Loader**
 
 [Download the latest release](https://github.com/Fr33d0m206/Cabin-Shooting-Range/releases/latest)
 
@@ -92,6 +92,8 @@ Press **F4 outdoors** to open the range editor. **Alt+R** is also available as a
 - Save up to **three scenarios per map**.
 - Build arrangements with up to **40 pieces**.
 - Keep your committed outdoor layouts between visits.
+
+Use the **Scenario 1**, **2** and **3** buttons to pick a slot. Click **Save** to store your current arrangement, or **Load** to switch to the arrangement you saved there. Empty slots leave your range in place.
 
 On your first visit to **Village**, six starter targets are placed around the outside of the cabin. You can rearrange them or build your own setup from scratch.
 

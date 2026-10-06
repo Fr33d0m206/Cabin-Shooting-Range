@@ -1,5 +1,15 @@
 # Cabin Shooting Range
 
+## 0.2.5
+
+- Fixed editor world clicks being consumed by the native HUD.
+- Hide the native HUD while editing and restore its original visibility when closing.
+- Resolve placement clicks during physics updates using the input event's viewport coordinates.
+- Fixed selecting an existing target with an empty collision-exclusion list.
+- Fixed scenario loads rejecting their own positions while old colliders were still being removed.
+- Replaced the scenario dropdown with three visible scenario buttons and clear Save/Load instructions.
+- Added mouse-input checks covering target selection, placement, dragging, scenario saves, scenario loads and empty slots.
+
 ## 0.2.4
 
 - Added **F4** as the main range-editor shortcut to avoid Alt+R overlay conflicts. Alt+R remains available as an alternative.

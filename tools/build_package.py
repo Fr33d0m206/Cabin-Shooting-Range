@@ -9,7 +9,7 @@ parser.add_argument('--mods-dir',type=Path,default=ROOT.parent.parent,help='Game
 args=parser.parse_args()
 files=[PROJECT/'mod.txt',*sorted((PROJECT/'mods/ShootingRange').rglob('*.gd')),*sorted((PROJECT/'mods/ShootingRange/assets').glob('*.png')),*sorted((PROJECT/'Assets/ShootingRange').glob('*.tscn')),*sorted((PROJECT/'Assets/ShootingRange').glob('*.tres'))]
 release=ROOT/'release';release.mkdir(exist_ok=True)
-archive_path=release/'ShootingRange-0.2.4.vmz'
+archive_path=release/'ShootingRange-0.2.5.vmz'
 with zipfile.ZipFile(archive_path,'w',zipfile.ZIP_DEFLATED,compresslevel=7) as archive:
     for source in files:
         name=source.relative_to(PROJECT).as_posix()

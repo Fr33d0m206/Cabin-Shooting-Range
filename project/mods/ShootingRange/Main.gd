@@ -44,13 +44,14 @@ func _ready() -> void:
 	layer.layer=99
 	add_child(layer)
 	toast=Label.new()
+	toast.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	toast.add_theme_font_size_override("font_size",18)
 	toast.add_theme_color_override("font_color",Color(.90,.80,.58))
 	toast.add_theme_color_override("font_shadow_color",Color.BLACK)
 	toast.add_theme_constant_override("shadow_offset_y",2)
 	layer.add_child(toast)
 	toast.hide()
-	print("[ShootingRange] 0.2.4 ready / F4 or Alt+R outdoors / native furniture + arcade scoring")
+	print("[ShootingRange] 0.2.5 ready / F4 or Alt+R outdoors / native furniture + arcade scoring")
 
 func blocked() -> bool:
 	if get_tree().paused:return true
@@ -181,6 +182,10 @@ func replace_layout(records: Array) -> void:
 	for target in targets:target.queue_free()
 	targets.clear()
 	var token=generation
+	# Allow queued removals to reach physics before validating the replacement.
+	# Otherwise the old layout blocks its own saved positions.
+	await get_tree().physics_frame
+	if token!=generation or not is_instance_valid(root):return
 	await restore(records,token)
 	if token!=generation:return
 	loading=false

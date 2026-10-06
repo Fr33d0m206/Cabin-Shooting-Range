@@ -5,7 +5,8 @@ var panel: PanelContainer
 var status: Label
 var selection: Label
 var snap: CheckButton
-var slot: OptionButton
+var slot_index=0
+var scenario_buttons: Array[Button]=[]
 var selected_actions: Array[Button]=[]
 var duration: OptionButton
 const GOLD=Color(.80,.67,.40)
@@ -68,10 +69,15 @@ func _ready() -> void:
 	col.add_child(snap)
 	col.add_child(HSeparator.new())
 	label(col,"SCENARIO LAYOUTS",12,GOLD)
-	slot=OptionButton.new()
-	for name in ["Scenario 1","Scenario 2","Scenario 3"]:slot.add_item(name)
-	slot.custom_minimum_size.y=34
-	col.add_child(slot)
+	var slots=HBoxContainer.new()
+	col.add_child(slots)
+	for i in 3:
+		var button=make_button(slots,"Scenario "+str(i+1),select_slot.bind(i))
+		button.toggle_mode=true
+		button.add_theme_font_size_override("font_size",12)
+		scenario_buttons.append(button)
+	select_slot(0)
+	label(col,"Select a slot, then Save or Load.",12,Color(.60,.64,.61))
 	var layouts=HBoxContainer.new()
 	col.add_child(layouts)
 	make_button(layouts,"Save",save_slot)
@@ -91,6 +97,7 @@ func _ready() -> void:
 	make_button(col,"RETURN TO PRACTICE    /    F4",func():editor.close())
 	label(col,"Drag  Move    /    Q E  Rotate\nWASD  Pan    /    RMB  Orbit\nWheel  Zoom    /    Ctrl+Z  Undo",12,Color(.60,.64,.61))
 	status=Label.new()
+	status.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	status.add_theme_font_size_override("font_size",16)
 	status.add_theme_color_override("font_color",Color(.93,.87,.69))
 	status.add_theme_color_override("font_shadow_color",Color.BLACK)
@@ -139,6 +146,14 @@ func show_editor() -> void:
 	status.text="Select a target to drag, or choose one from the library"
 	show()
 
+func popup_open() -> bool:
+	return duration.get_popup().visible
+
+func select_slot(index: int) -> void:
+	slot_index=index
+	for i in scenario_buttons.size():scenario_buttons[i].set_pressed_no_signal(i==index)
+	if status:status.text="Scenario "+str(index+1)+" selected / Save this layout or Load a saved one"
+
 func selection_changed(target: Node3D) -> void:
 	if not selection:return
 	selection.text=Catalog.TYPES[target.kind].name+"  /  "+str(target.hits)+" hits" if is_instance_valid(target) else "No target selected"
@@ -146,13 +161,15 @@ func selection_changed(target: Node3D) -> void:
 
 func save_slot() -> void:
 	if editor.host.loading or editor.dragged:return
-	var ok=editor.host.store.write(editor.host.map_key,"scenario"+str(slot.selected+1),editor.host.rows())
-	editor.host.notice("Scenario saved" if ok else "Could not save scenario")
+	var ok=editor.host.store.write(editor.host.map_key,"scenario"+str(slot_index+1),editor.host.rows())
+	editor.host.notice("Scenario "+str(slot_index+1)+" saved" if ok else "Could not save scenario")
 
 func load_slot() -> void:
 	if editor.host.loading:return
 	var host=editor.host
-	var key="scenario"+str(slot.selected+1)
+	var key="scenario"+str(slot_index+1)
 	if not host.store.config.has_section_key(host.map_key,key):host.notice("This scenario slot is empty");return
 	host.checkpoint()
-	host.replace_layout(host.store.read(host.map_key,key))
+	var records=host.store.read(host.map_key,key)
+	await host.replace_layout(records)
+	if editor.opened and host.targets.size()==records.size():host.notice("Scenario "+str(slot_index+1)+" loaded")

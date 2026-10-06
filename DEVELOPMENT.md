@@ -22,7 +22,7 @@ Python 3 is required for the package tools. Run commands from the repository roo
 python tools/build_package.py
 ```
 
-This creates **release/ShootingRange-0.2.4.vmz** and checks every archive entry against the current source. Committed textures and furniture definitions are already ready to package.
+This creates **release/ShootingRange-0.2.5.vmz** and checks every archive entry against the current source. Committed textures and furniture definitions are already ready to package.
 
 To install your build into a specific game folder:
 
@@ -84,4 +84,4 @@ After the checks pass:
 python tools/package_release.py --mods-dir "C:/Games/Road to Vostok/mods"
 ```
 
-The tool requires passing reports, an exact source/archive match and matching archives from the native and package-only tests. It creates **release/ShootingRange-v0.2.4.zip**, containing the VMZ, public documents and checksums. Compiled archives and local validation files are ignored by Git; publish the ZIP as a release asset.
+The tool requires passing reports, an exact source/archive match and matching archives from the native and package-only tests. It creates **release/ShootingRange-v0.2.5.zip**, containing the VMZ, public documents and checksums. Compiled archives and local validation files are ignored by Git; publish the ZIP as a release asset.

@@ -1,7 +1,7 @@
 [mod]
 name="Cabin Shooting Range"
 id="cabin-shooting-range"
-version="0.2.4"
+version="0.2.5"
 description="Native furniture targets and modular practice walls. Worn PBR surfaces, headshots, timed challenges, saved high scores and occasional arcade feedback. F4 or Alt+R range editor; normal furniture catalog/spawner and Generalist trader support."
 
 [autoload]

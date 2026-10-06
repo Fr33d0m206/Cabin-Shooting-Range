@@ -1,6 +1,6 @@
 # Release Verification
 
-**Version:** 0.2.4
+**Version:** 0.2.5
 
 **Verified:** 2026-10-06
 
@@ -12,10 +12,10 @@
 
 | Check | Result |
 | --- | --- |
-| Geometry, editor, placement and storage | 100 passed |
+| Geometry, editor, placement and storage | 121 passed |
 | Hanging attachments and paddle recovery | 80 passed |
 | Scoring, popup throttling and records | 37 passed |
-| Full native game integration | 80 passed |
+| Full native game integration | 100 passed |
 | Archive-only loading | All twelve designs loaded |
 | Forward+ / D3D12 review renders | Fifteen captures, no script or engine errors |
 | VMZ contents | 82 entries verified byte-for-byte against source |
@@ -25,6 +25,10 @@
 - F4 and Alt+R open and close the editor through the game's input system.
 - F4 has no conflicts in the tested native InputMap. Repeat and release events do not toggle the editor.
 - Closing restores the original camera, mouse mode and player controls.
+- Native HUD controls are hidden while editing and restored when the editor closes.
+- Mouse input selects a library target, places it on actual ground, commits on release and drags an existing plate.
+- Scenario buttons select each slot. Save and Load retain two different arrangements; an empty slot preserves the current layout.
+- Scenario replacement waits for removed colliders before testing the saved positions.
 - All twelve pieces appear in the Furniture Spawner during normal startup.
 - Furniture catalog addition, duplicate prevention and Generalist purchasing work through native systems.
 - Native placement, return to catalog, shelter saves and map travel retain the expected items and layouts.
@@ -39,6 +43,8 @@
 
 Standalone checks used Godot 4.6.2. Native checks used the installed game's Godot 4.6.3 executable and the seven-mod compatibility stack documented in [DEVELOPMENT.md](DEVELOPMENT.md). User-data paths were redirected into isolated fixtures. Metro's first fixture launch generated its hook pack; integration checks ran after restarting that fixture.
 
+Editor checks dispatch mouse press, motion and release events through the game's input system and click the visible library, scenario, Save and Load controls. Viewport coordinates are converted through the window's final transform. The test chooses unobstructed camera views and supported native ground; it does not bypass placement validation.
+
 Native shots used controlled physics rays through the game's impact method. Record tests exercised completion and storage with controlled scores. These are automated checks, not claims of a human-played perfect round.
 
 Audio dispatch was tested with sound output routed to Dummy. Audible balance, sustained manual gameplay and frame-time performance still need hands-on review. Game-side input dispatch cannot establish whether an external overlay intercepts a physical shortcut.
@@ -48,7 +54,7 @@ Audio dispatch was tested with sound output routed to Dummy. Audible balance, su
 The release ZIP includes **SHA256SUMS.txt** for its files. The verified VMZ SHA-256 is:
 
 ```text
-fa32f88e91fb27f648004c07fda4a8a13cb7eee4a5c09f2d3d7760a8d7e6ce7f
+1c0161c246166242e3dffb046821f09a50b393019b93c46ea388b199a54574f9
 ```
 
 Use the commands in [DEVELOPMENT.md](DEVELOPMENT.md) to reproduce the checks. Local logs, fixtures, saves and cached game resources are excluded from this repository.

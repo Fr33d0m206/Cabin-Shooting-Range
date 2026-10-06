@@ -16,6 +16,9 @@ func check(ok: bool, message: String) -> void:
 	checks+=1
 	if not ok:failures+=1
 	print("CHECK ","PASS " if ok else "FAIL ",message)
+func verified(ok: bool, message: String) -> bool:
+	check(ok,message)
+	return ok
 func box(point: Vector3, size: Vector3) -> StaticBody3D:
 	var body=StaticBody3D.new()
 	var shape=BoxShape3D.new()
@@ -27,6 +30,7 @@ func box(point: Vector3, size: Vector3) -> StaticBody3D:
 	body.add_child(collider)
 	return body
 func run() -> void:
+	root.size=Vector2i(1600,1000)
 	world=MapFixture.new()
 	world.name="Map"
 	root.add_child(world)
@@ -120,6 +124,10 @@ func run() -> void:
 	var core=Node3D.new()
 	core.name="Core"
 	world.add_child(core)
+	var native_ui=Control.new()
+	native_ui.name="UI"
+	native_ui.size=root.get_visible_rect().size
+	core.add_child(native_ui)
 	var player=CharacterBody3D.new()
 	player.name="Controller"
 	core.add_child(player)
@@ -206,6 +214,11 @@ func run() -> void:
 	check(not host.editor.opened and core.process_mode==Node.PROCESS_MODE_INHERIT,"shortcut closes and restores player controls")
 	shortcut.pressed=false
 	Input.parse_input_event(shortcut)
+	host.editor.open()
+	var editor_checks=load("res://tests/EditorInputChecks.gd").new()
+	await editor_checks.run(host,verified)
+	host.editor.close()
+	check(native_ui.visible,"editor restores native HUD visibility after mouse interactions")
 	host.queue_free()
 	world.queue_free()
 	await process_frame

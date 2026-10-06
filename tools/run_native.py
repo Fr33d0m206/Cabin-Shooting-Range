@@ -21,15 +21,18 @@ for name in ['RTV.exe','RTV.pck','modloader.gd']:
         if name=='RTV.pck':os.link(source,dest)
         else:shutil.copy2(source,dest)
 shutil.copy2(ROOT/'project/tests/NativeMonitor.gd',fixture/'NativeMonitor.gd')
+shutil.copy2(ROOT/'project/tests/EditorInputChecks.gd',fixture/'EditorInputChecks.gd')
 (fixture/'override.cfg').write_text('[autoload_prepend]\nModLoader="*res://modloader.gd"\nNativeRangeMonitor="*res://NativeMonitor.gd"\n')
 archives=fixture/'mods';archives.mkdir(exist_ok=True)
 for source in MODS.glob('*.vmz'):
     if source.name!='ShootingRange.vmz':shutil.copy2(source,archives/source.name)
-shutil.copy2(ROOT/'release/ShootingRange-0.2.4.vmz',archives/'ShootingRange.vmz')
+shutil.copy2(ROOT/'release/ShootingRange-0.2.5.vmz',archives/'ShootingRange.vmz')
 env=os.environ.copy()
 for key in ['APPDATA','LOCALAPPDATA']:
     path=fixture/key.lower();path.mkdir(exist_ok=True);env[key]=str(path)
 user=fixture/'appdata/Road to Vostok';user.mkdir(exist_ok=True)
+# Each run starts a new test character; discard only its isolated range layout.
+(user/'cabin_shooting_range.cfg').unlink(missing_ok=True)
 paths=', '.join(json.dumps(str(p).replace('\\','/')) for p in sorted(archives.glob('*.vmz')))
 state=user/'mod_pass_state.cfg'
 text=state.read_text() if state.exists() else '[state]\nmodloader_version="3.4.1"\n'

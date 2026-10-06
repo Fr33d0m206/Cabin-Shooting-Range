@@ -87,6 +87,8 @@ Press **F4 outdoors** to open the range editor. **Alt+R** is also available as a
 - Build arrangements with up to **40 pieces**.
 - Keep your committed outdoor layouts between visits.
 
+Use the **Scenario 1**, **2** and **3** buttons to pick a slot. Click **Save** to store your current arrangement, or **Load** to switch to the arrangement you saved there. Empty slots leave your range in place.
+
 On your first visit to **Village**, six starter targets are placed around the outside of the cabin. You can rearrange them or build your own setup from scratch.
 
 Put a no-shoot target beside a silhouette, scatter steel plates between windows, or build a little kill house and practice moving through it. That is the whole idea. Make something fun to practice on.
