@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+[ext_resource type="Script" path="res://Scripts/ItemData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/ShootingRange/torso_Icon.tscn" id="2"]
+[resource]
+script = ExtResource("1")
+file = "ShootingRange_torso"
+name = "Range: Steel Torso"
+display = "Range: Steel Torso"
+inventory = "Range: Steel Torso"
+rotated = "Range: Steel Torso"
+equipment = "Range: Steel Torso"
+type = "Furniture"
+subtype = "Practice Range"
+size = Vector2(2, 2)
+value = 100
+weight = 0.0
+rarity = 0
+generalist = true
+stackable = false
+tetris = ExtResource("2")

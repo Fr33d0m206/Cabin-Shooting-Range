@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+[ext_resource type="Script" path="res://Scripts/ItemData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/ShootingRange/doorway_Icon.tscn" id="2"]
+[resource]
+script = ExtResource("1")
+file = "ShootingRange_doorway"
+name = "Range: Practice Doorway"
+display = "Range: Practice Doorway"
+inventory = "Range: Practice Doorway"
+rotated = "Range: Practice Doorway"
+equipment = "Range: Practice Doorway"
+type = "Furniture"
+subtype = "Practice Range"
+size = Vector2(2, 2)
+value = 90
+weight = 0.0
+rarity = 0
+generalist = true
+stackable = false
+tetris = ExtResource("2")

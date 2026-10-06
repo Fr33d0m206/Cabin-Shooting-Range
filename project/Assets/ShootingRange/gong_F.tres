@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+[ext_resource type="Script" path="res://Scripts/ItemData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/ShootingRange/gong_Icon.tscn" id="2"]
+[resource]
+script = ExtResource("1")
+file = "ShootingRange_gong"
+name = "Range: Round Gong"
+display = "Range: Round Gong"
+inventory = "Range: Round Gong"
+rotated = "Range: Round Gong"
+equipment = "Range: Round Gong"
+type = "Furniture"
+subtype = "Practice Range"
+size = Vector2(2, 2)
+value = 75
+weight = 0.0
+rarity = 0
+generalist = true
+stackable = false
+tetris = ExtResource("2")

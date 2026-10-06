@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+[ext_resource type="Script" path="res://Scripts/ItemData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/ShootingRange/wall_Icon.tscn" id="2"]
+[resource]
+script = ExtResource("1")
+file = "ShootingRange_wall"
+name = "Range: Practice Wall"
+display = "Range: Practice Wall"
+inventory = "Range: Practice Wall"
+rotated = "Range: Practice Wall"
+equipment = "Range: Practice Wall"
+type = "Furniture"
+subtype = "Practice Range"
+size = Vector2(2, 2)
+value = 80
+weight = 0.0
+rarity = 0
+generalist = true
+stackable = false
+tetris = ExtResource("2")

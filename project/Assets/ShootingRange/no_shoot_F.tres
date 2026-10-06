@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+[ext_resource type="Script" path="res://Scripts/ItemData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/ShootingRange/no_shoot_Icon.tscn" id="2"]
+[resource]
+script = ExtResource("1")
+file = "ShootingRange_no_shoot"
+name = "Range: No-Shoot Silhouette"
+display = "Range: No-Shoot Silhouette"
+inventory = "Range: No-Shoot Silhouette"
+rotated = "Range: No-Shoot Silhouette"
+equipment = "Range: No-Shoot Silhouette"
+type = "Furniture"
+subtype = "Practice Range"
+size = Vector2(2, 2)
+value = 30
+weight = 0.0
+rarity = 0
+generalist = true
+stackable = false
+tetris = ExtResource("2")

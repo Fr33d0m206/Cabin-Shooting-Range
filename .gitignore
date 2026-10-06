@@ -1,0 +1,11 @@
+validation/
+project/.godot/
+project/**/*.uid
+project/**/*.import
+__pycache__/
+*.pyc
+.venv/
+release/*.vmz
+release/*.zip
+release/previous-*
+.env

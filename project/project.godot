@@ -1,0 +1,13 @@
+config_version=5
+[application]
+config/name="Shooting Range Validation"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="ShootingRangeValidation"
+[display]
+window/size/viewport_width=1600
+window/size/viewport_height=1000
+[rendering]
+renderer/rendering_method="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2
+[debug]
+file_logging/enable_file_logging=false

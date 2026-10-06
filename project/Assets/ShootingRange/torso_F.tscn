@@ -1,0 +1,76 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://mods/ShootingRange/Target.gd" id="1"]
+[ext_resource type="Script" path="res://mods/ShootingRange/NativeFurniture.gd" id="2"]
+[ext_resource type="Resource" path="res://Assets/ShootingRange/torso_F.tres" id="3"]
+[ext_resource type="Texture2D" path="res://UI/Sprites/Icon_Object.png" id="4"]
+[ext_resource type="Material" path="res://Modular/Materials/MT_Hint.tres" id="5"]
+[sub_resource type="BoxMesh" id="Bounds"]
+size = Vector3(1.2, 1.8, 0.85)
+custom_aabb = AABB(-0.6, 0, -0.425, 1.2, 1.8, 0.85)
+[sub_resource type="BoxShape3D" id="Feet"]
+size = Vector3(0.1, 0.06, 0.6)
+[sub_resource type="BoxShape3D" id="Area"]
+size = Vector3(1.0999999999999999, 1.6, 0.75)
+[sub_resource type="BoxShape3D" id="Parent"]
+size = Vector3(1.3, 1.9000000000000001, 0.95)
+[sub_resource type="PlaneMesh" id="Hint"]
+material = ExtResource("5")
+size = Vector2(1.2, 0.85)
+[node name="Range_torso_F" type="Node3D"]
+script = ExtResource("1")
+kind = "torso"
+[node name="Bounds" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("Bounds")
+[node name="Body" type="StaticBody3D" parent="Bounds" groups=["Furniture"]]
+collision_layer = 1
+collision_mask = 0
+[node name="Shape" type="CollisionShape3D" parent="Bounds/Body"]
+position = Vector3(0, 0.04, 0)
+shape = SubResource("Feet")
+[node name="Furniture" type="Node3D" parent="." node_paths=PackedStringArray("mesh", "colliderR")]
+script = ExtResource("2")
+itemData = ExtResource("3")
+mesh = NodePath("../Bounds")
+colliderR = NodePath("../Bounds")
+[node name="Indicator" type="Sprite3D" parent="Furniture"]
+modulate = Color(0.7, 0.85, 0.5, 0.4)
+texture = ExtResource("4")
+pixel_size = 0.0005
+billboard = 1
+no_depth_test = true
+[node name="Area" type="Area3D" parent="Furniture"]
+collision_layer = 0
+collision_mask = 8255
+[node name="Shape" type="CollisionShape3D" parent="Furniture/Area"]
+position = Vector3(0, 1.0, 0)
+shape = SubResource("Area")
+[node name="Parenter" type="Area3D" parent="Furniture"]
+collision_layer = 0
+collision_mask = 4
+[node name="Shape" type="CollisionShape3D" parent="Furniture/Parenter"]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("Parent")
+[node name="Rays" type="Node3D" parent="Furniture"]
+[node name="Ray_0" type="RayCast3D" parent="Furniture/Rays"]
+position = Vector3(0, 0.12, 0)
+target_position = Vector3(0, -0.3, 0)
+enabled = false
+[node name="Ray_1" type="RayCast3D" parent="Furniture/Rays"]
+position = Vector3(0.54, 0.12, 0.34)
+target_position = Vector3(0, -0.3, 0)
+enabled = false
+[node name="Ray_2" type="RayCast3D" parent="Furniture/Rays"]
+position = Vector3(-0.54, 0.12, 0.34)
+target_position = Vector3(0, -0.3, 0)
+enabled = false
+[node name="Ray_3" type="RayCast3D" parent="Furniture/Rays"]
+position = Vector3(0.54, 0.12, -0.34)
+target_position = Vector3(0, -0.3, 0)
+enabled = false
+[node name="Ray_4" type="RayCast3D" parent="Furniture/Rays"]
+position = Vector3(-0.54, 0.12, -0.34)
+target_position = Vector3(0, -0.3, 0)
+enabled = false
+[node name="Hint" type="MeshInstance3D" parent="Furniture"]
+mesh = SubResource("Hint")

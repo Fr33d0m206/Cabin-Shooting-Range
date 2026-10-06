@@ -1,0 +1,6 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://mods/ShootingRange/ItemIcon.gd" id="1"]
+[node name="RangeIcon" type="Sprite2D"]
+position = Vector2(64, 64)
+script = ExtResource("1")
+kind = "diamond"
